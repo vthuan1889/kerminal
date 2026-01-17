@@ -64,6 +64,15 @@ export const useWorkspaceStore = defineStore("workspace", () => {
 
   const activePanelId = ref<string>("panel-1");
   const terminals = ref<TerminalInstance[]>([]);
+  const focusedTerminalId = ref<string | null>(null);
+
+  /**
+   * Set the focused terminal
+   * @param terminalId - The terminal ID to focus, or null to clear focus
+   */
+  const setFocusedTerminal = (terminalId: string | null): void => {
+    focusedTerminalId.value = terminalId;
+  };
 
   let tabCounter = 1;
   let panelCounter = 2; // Start from 2 since panel-1 is already created
@@ -241,6 +250,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
     panel.activeTabId = newTabId;
 
     terminals.value.push(newTerminal);
+    focusedTerminalId.value = newTabId;
 
     viewState.setActiveView("workspace");
 
@@ -282,6 +292,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
     panel.activeTabId = newTabId;
 
     terminals.value.push(newTerminal);
+    focusedTerminalId.value = newTabId;
 
     viewState.setActiveView("workspace");
 
@@ -324,6 +335,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
     panel.activeTabId = newTabId;
 
     terminals.value.push(newTerminal);
+    focusedTerminalId.value = newTabId;
 
     viewState.setActiveView("workspace");
 
@@ -368,6 +380,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
     panel.activeTabId = newTabId;
 
     terminals.value.push(newTerminal);
+    focusedTerminalId.value = newTabId;
 
     viewState.setActiveView("workspace");
 
@@ -684,6 +697,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
 
     splitPanelInLayout(panelLayout.value, panelId, newPanel, "horizontal");
     setActivePanel(newPanelId);
+    focusedTerminalId.value = newTab.id;
     tabCounter++;
   };
 
@@ -710,7 +724,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
         const newTerminal: TerminalInstance = {
           id: newTabId,
           ready: false,
-          shouldFocusOnReady: true, // Mark this terminal to focus when ready
+          shouldFocusOnReady: true,
         };
         terminals.value.push(newTerminal);
       } else {
@@ -743,6 +757,7 @@ export const useWorkspaceStore = defineStore("workspace", () => {
 
     splitPanelInLayout(panelLayout.value, panelId, newPanel, "vertical");
     setActivePanel(newPanelId);
+    focusedTerminalId.value = newTab.id;
     tabCounter++;
   };
 
@@ -1538,8 +1553,10 @@ export const useWorkspaceStore = defineStore("workspace", () => {
     panelLayout,
     activePanelId,
     terminals,
+    focusedTerminalId,
 
     setActivePanel,
+    setFocusedTerminal,
     selectTab,
     addTab,
     addSSHTab,
